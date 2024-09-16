@@ -3,7 +3,7 @@ const require = createRequire(import.meta.url); //Nécessaire pour import ES6 ve
 const express = require('express')
 const app = express()
 const path = require('path');
-import {listeEleves} from "./sources/eleves.mjs";
+import {listeEleves} from "./sources/eleveSterenn.mjs";
 
 app.get('/test', (requete, resultat) => {
     resultat.send('Bonjour aux SIO SLAM')
@@ -39,7 +39,10 @@ app.get('/validation', (requete, resultat) => {
 })
 
 app.get('/api/leseleves', (requete, resultat) => {
-    resultat.json(listeEleves)
+    const listePartielle = listeEleves.map(eleve => {
+        return { nomEleve: eleve.nom, prenomEleve: eleve.prenom }
+    })
+    resultat.json(listePartielle)
 })
 
 app.listen(3000)
