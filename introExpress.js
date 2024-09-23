@@ -3,6 +3,11 @@ const require = createRequire(import.meta.url); //Nécessaire pour import ES6 ve
 const express = require('express')
 const app = express()
 const path = require('path');
+
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 import {listeEleves} from "./sources/eleveSterenn.mjs";
 
 app.get('/test', (requete, resultat) => {
@@ -43,6 +48,15 @@ app.get('/api/leseleves', (requete, resultat) => {
         return { nomEleve: eleve.nom, prenomEleve: eleve.prenom }
     })
     resultat.json(listePartielle)
+})
+
+
+app.get('/chercheParNomEtPrenom/:nomEleve/:prenomEleve', (requete, resultat) => {
+    const trouveNomEtPrenomExact = listeEleves.find( eleve => (eleve.nom == requete.params.nomEleve && eleve.prenom == requete.params.prenomEleve))
+    if (!trouveNomEtPrenomExact) {
+        return resultat.status(404).send('Etudiant non trouvé')
+    }
+    else return resultat.json(trouveNomEtPrenomExact)
 })
 
 app.listen(3000)
